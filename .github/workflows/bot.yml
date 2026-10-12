@@ -1,0 +1,53 @@
+name: Run Telegram Bot
+
+on:
+  workflow_dispatch:        # sirf Actions tab se manually start (auto-restart nahi)
+
+# ek hi time par sirf ek bot chale; naya run shuru karne par purana band ho jata hai (update ke liye zaroori)
+concurrency:
+  group: telegram-bot
+  cancel-in-progress: true
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - name: Code download
+        uses: actions/checkout@v4
+
+      - name: Python setup
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Requirements install
+        run: pip install -r requirements.txt
+
+      # thumbnail (thumb.json) restart ke baad bhi bacha rahe
+      - name: Thumbnail restore
+        id: thumb-restore
+        uses: actions/cache/restore@v4
+        with:
+          path: thumb.json
+          key: thumb-${{ github.run_id }}
+          restore-keys: thumb-
+
+      - name: Bot start
+        timeout-minutes: 345
+        env:
+          API_ID: ${{ secrets.API_ID }}
+          API_HASH: ${{ secrets.API_HASH }}
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          OWNER_IDS: ${{ secrets.OWNER_IDS }}
+          TARGET_CHANNEL: ${{ secrets.TARGET_CHANNEL }}
+        run: python public_saver_thumb_bot.py
+
+      - name: Thumbnail save
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: thumb.json
+          key: thumb-${{ github.run_id }}
+          
