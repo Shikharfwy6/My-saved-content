@@ -43,7 +43,7 @@ TARGET_CHANNEL = int(os.environ.get("TARGET_CHANNEL", "-1003914383416"))
 OWNER_IDS = [int(x) for x in os.environ.get("OWNER_IDS", "123456789").replace(" ", "").split(",") if x]
 # ===========================================================
 
-MAX_RANGE = 100      # ek link range me maximum posts
+MAX_RANGE = 10000      # ek link range me maximum posts
 DELAY = 1.5          # har post ke beech wait (seconds)
 THUMB_FILE = "thumb.json"   # thumbnail ka file_id yahan save hota hai (restart ke baad bhi rahe)
 
