@@ -21,6 +21,12 @@ import re
 import json
 import asyncio
 
+# Python 3.12+ par pyrogram import se pehle ek event loop chahiye
+try:
+    asyncio.get_event_loop()
+except RuntimeError:
+    asyncio.set_event_loop(asyncio.new_event_loop())
+
 import aiohttp
 from pyrogram import Client, filters, enums
 from pyrogram.errors import FloodWait
@@ -37,7 +43,7 @@ TARGET_CHANNEL = int(os.environ.get("TARGET_CHANNEL", "-1003914383416"))
 OWNER_IDS = [int(x) for x in os.environ.get("OWNER_IDS", "123456789").replace(" ", "").split(",") if x]
 # ===========================================================
 
-MAX_RANGE = 10000      # ek link range me maximum posts
+MAX_RANGE = 100      # ek link range me maximum posts
 DELAY = 1.5          # har post ke beech wait (seconds)
 THUMB_FILE = "thumb.json"   # thumbnail ka file_id yahan save hota hai (restart ke baad bhi rahe)
 
